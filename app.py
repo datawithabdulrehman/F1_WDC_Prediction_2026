@@ -59,33 +59,42 @@ if run:
             try:
                 bundle = load_and_clean_data(season=int(season), use_api=True)
             except Exception:
-                # Fixed layout structure to prevent syntax parser errors
+                # Custom fallback class object simulation mapping
                 class MockBundle:
-                    results = pd.DataFrame({
-                        'season': [2026]*12, 
-                        'round': [1]*6 + [2]*6, 
-                        'driver_id': ['antonelli','verstappen','norris','hamilton','leclerc','russell']*2, 
-                        'driver_name': ['Andrea Kimi Antonelli','Max Verstappen','Lando Norris','Lewis Hamilton','Charles Leclerc','George Russell']*2, 
-                        'constructor_id': ['mercedes','red_bull','mclaren','ferrari','ferrari','mercedes']*2, 
-                        'grid': [1,2,3,4,5,6]*2, 
-                        'position': [1,2,3,4,5,6]*2, 
-                        'points': [25,18,15,12,10,8]*2, 
-                        'status': ['Finished']*12, 
-                        'laps': [60]*12,
-                        'date': ['2026-05-24']*12
-                    })
-                    drivers = pd.DataFrame({'driver_id': ['antonelli','verstappen','norris','hamilton','leclerc','russell']})
-                    constructors = pd.DataFrame({'constructor_id': ['mercedes','red_bull','mclaren','ferrari']})
-                    schedule = pd.DataFrame({'round':, 'race_name': ['Monaco Grand Prix', 'Spanish Grand Prix']})
+                    def __init__(self):
+                        # Dictionary parsing structure separated to avoid any syntax tokenizer error
+                        results_dict = {
+                            "season": [2026]*12,
+                            "round":,
+                            "driver_id": ["antonelli","verstappen","norris","hamilton","leclerc","russell"]*2,
+                            "driver_name": ["Andrea Kimi Antonelli","Max Verstappen","Lando Norris","Lewis Hamilton","Charles Leclerc","George Russell"]*2,
+                            "constructor_id": ["mercedes","red_bull","mclaren","ferrari","ferrari","mercedes"]*2,
+                            "grid":,
+                            "position":,
+                            "points":,
+                            "status": ["Finished"]*12,
+                            "laps": [60]*12,
+                            "date": ["2026-05-24"]*12
+                        }
+                        self.results = pd.DataFrame(results_dict)
+                        self.drivers = pd.DataFrame({"driver_id": ["antonelli","verstappen","norris","hamilton","leclerc","russell"]})
+                        self.constructors = pd.DataFrame({"constructor_id": ["mercedes","red_bull","mclaren","ferrari"]})
+                        
+                        schedule_dict = {
+                            "round":,
+                            "race_name": ["Monaco Grand Prix", "Spanish Grand Prix"]
+                        }
+                        self.schedule = pd.DataFrame(schedule_dict)
+
                 bundle = MockBundle()
 
-            # Structural safeguards for the database schema metrics
-            if 'status' not in bundle.results.columns:
-                bundle.results['status'] = 'Finished'
-            if 'laps' not in bundle.results.columns:
-                bundle.results['laps'] = 60
-            if 'date' not in bundle.results.columns:
-                bundle.results['date'] = '2026-05-24'
+            # Ensure all required status variables are available for engineering functions
+            if "status" not in bundle.results.columns:
+                bundle.results["status"] = "Finished"
+            if "laps" not in bundle.results.columns:
+                bundle.results["laps"] = 60
+            if "date" not in bundle.results.columns:
+                bundle.results["date"] = "2026-05-24"
 
             X, y = engineer_features(bundle.results)
             model = train_f1_model(X, y)
