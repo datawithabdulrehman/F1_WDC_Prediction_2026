@@ -59,7 +59,7 @@ if run:
             try:
                 bundle = load_and_clean_data(season=int(season), use_api=True)
             except Exception:
-                # Fully resolved list parsing to avoid token syntax errors
+                # Fully hardcoded populated lists to guarantee zero syntax crashes
                 class MockBundle:
                     def __init__(self):
                         results_dict = {
@@ -71,9 +71,9 @@ if run:
                             "grid":,
                             "position":,
                             "points": [25.0, 18.0, 15.0, 12.0, 10.0, 8.0, 25.0, 18.0, 15.0, 12.0, 10.0, 8.0],
-                            "status": ["Finished"]*12,
-                            "laps": [60]*12,
-                            "date": ["2026-05-24"]*12
+                            "status": ["Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished"],
+                            "laps":,
+                            "date": ["2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24"]
                         }
                         self.results = pd.DataFrame(results_dict)
                         self.drivers = pd.DataFrame({"driver_id": ["antonelli","verstappen","norris","hamilton","leclerc","russell"]})
@@ -87,7 +87,7 @@ if run:
 
                 bundle = MockBundle()
 
-            # Ensure all required fallback variables are available for engineering functions
+            # Schema safeguards validation checks mapping lines
             if "status" not in bundle.results.columns:
                 bundle.results["status"] = "Finished"
             if "laps" not in bundle.results.columns:
