@@ -59,7 +59,7 @@ if run:
             try:
                 bundle = load_and_clean_data(season=int(season), use_api=True)
             except Exception:
-                # Fully hardcoded populated lists to guarantee zero syntax crashes
+                # Fully closed lists arrays to guarantee zero syntax crashes on line 66
                 class MockBundle:
                     def __init__(self):
                         results_dict = {
@@ -87,7 +87,7 @@ if run:
 
                 bundle = MockBundle()
 
-            # Schema safeguards validation checks mapping lines
+            # Safeguards configuration lines
             if "status" not in bundle.results.columns:
                 bundle.results["status"] = "Finished"
             if "laps" not in bundle.results.columns:
