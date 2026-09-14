@@ -59,35 +59,39 @@ if run:
             try:
                 bundle = load_and_clean_data(season=int(season), use_api=True)
             except Exception:
-                # Fully closed lists arrays to guarantee zero syntax crashes on line 66
+                # Using pure string arrays to bypass any nested dictionary syntax collisions
                 class MockBundle:
                     def __init__(self):
-                        results_dict = {
-                            "season":,
-                            "round":,
+                        # 12 items securely assigned without raw integer list brackets formatting collisions
+                        self.results = pd.DataFrame({
+                            "season": ["2026"] * 12,
+                            "round": ["1","1","1","1","1","1","2","2","2","2","2","2"],
                             "driver_id": ["antonelli","verstappen","norris","hamilton","leclerc","russell","antonelli","verstappen","norris","hamilton","leclerc","russell"],
                             "driver_name": ["Andrea Kimi Antonelli","Max Verstappen","Lando Norris","Lewis Hamilton","Charles Leclerc","George Russell","Andrea Kimi Antonelli","Max Verstappen","Lando Norris","Lewis Hamilton","Charles Leclerc","George Russell"],
                             "constructor_id": ["mercedes","red_bull","mclaren","ferrari","ferrari","mercedes","mercedes","red_bull","mclaren","ferrari","ferrari","mercedes"],
-                            "grid":,
-                            "position":,
-                            "points": [25.0, 18.0, 15.0, 12.0, 10.0, 8.0, 25.0, 18.0, 15.0, 12.0, 10.0, 8.0],
-                            "status": ["Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished", "Finished"],
-                            "laps":,
-                            "date": ["2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24", "2026-05-24"]
-                        }
-                        self.results = pd.DataFrame(results_dict)
+                            "grid": ["1","2","3","4","5","6","1","2","3","4","5","6"],
+                            "position": ["1","2","3","4","5","6","1","2","3","4","5","6"],
+                            "points": ["25","18","15","12","10","8","25","18","15","12","10","8"],
+                            "status": ["Finished"] * 12,
+                            "laps": ["60"] * 12,
+                            "date": ["2026-05-24"] * 12
+                        })
+                        
+                        # Programmatically recast objects to integers to satisfy scikit-learn models
+                        for col in ["season", "round", "grid", "position", "points", "laps"]:
+                            self.results[col] = pd.to_numeric(self.results[col])
+
                         self.drivers = pd.DataFrame({"driver_id": ["antonelli","verstappen","norris","hamilton","leclerc","russell"]})
                         self.constructors = pd.DataFrame({"constructor_id": ["mercedes","red_bull","mclaren","ferrari"]})
                         
-                        schedule_dict = {
+                        self.schedule = pd.DataFrame({
                             "round":,
                             "race_name": ["Monaco Grand Prix", "Spanish Grand Prix"]
-                        }
-                        self.schedule = pd.DataFrame(schedule_dict)
+                        })
 
                 bundle = MockBundle()
 
-            # Safeguards configuration lines
+            # Ensure all required fallback variables are available for engineering functions
             if "status" not in bundle.results.columns:
                 bundle.results["status"] = "Finished"
             if "laps" not in bundle.results.columns:
