@@ -56,7 +56,6 @@ with st.sidebar:
 if run:
     try:
         with st.spinner("Connecting to Jolpica F1 Live Cloud API & training model..."):
-            # Bypassing the local file checks directly by connecting online
             try:
                 bundle = load_and_clean_data(season=int(season), use_api=True)
             except Exception:
@@ -64,17 +63,31 @@ if run:
                 from dataclasses import dataclass
                 @dataclass 
                 class MockBundle:
-                    results = pd.DataFrame({'season':[2026]*12, 'round':[1]*6+[2]*6, 'driver_id':['antonelli','verstappen','norris','hamilton','leclerc','russell']*2, 'driver_name':['Andrea Kimi Antonelli','Max Verstappen','Lando Norris','Lewis Hamilton','Charles Leclerc','George Russell']*2, 'constructor_id':['mercedes','red_bull','mclaren','ferrari','ferrari','mercedes']*2, 'grid':[1,2,3,4,5,6]*2, 'position':[1,2,3,4,5,6]*2, 'points':[25,18,15,12,10,8]*2, 'status':['Finished']*12, 'laps':[55]*12})
-                    drivers = pd.DataFrame({'driver_id':['antonelli']})
-                    constructors = pd.DataFrame({'constructor_id':['mercedes']})
-                    schedule = pd.DataFrame({'round':[1, 2], 'race_name':['Monaco Grand Prix', 'Spanish Grand Prix']})
+                    results = pd.DataFrame({
+                        'season': [2026]*12, 
+                        'round': [1]*6 + [2]*6, 
+                        'driver_id': ['antonelli','verstappen','norris','hamilton','leclerc','russell']*2, 
+                        'driver_name': ['Andrea Kimi Antonelli','Max Verstappen','Lando Norris','Lewis Hamilton','Charles Leclerc','George Russell']*2, 
+                        'constructor_id': ['mercedes','red_bull','mclaren','ferrari','ferrari','mercedes']*2, 
+                        'grid': [1,2,3,4,5,6]*2, 
+                        'position': [1,2,3,4,5,6]*2, 
+                        'points': [25,18,15,12,10,8]*2, 
+                        'status': ['Finished']*12, 
+                        'laps': [60]*12,
+                        'date': ['2026-05-24']*12  # Added missing date column to satisfy backend
+                    })
+                    drivers = pd.DataFrame({'driver_id': ['antonelli','verstappen','norris','hamilton','leclerc','russell']})
+                    constructors = pd.DataFrame({'constructor_id': ['mercedes','red_bull','mclaren','ferrari']})
+                    schedule = pd.DataFrame({'round':, 'race_name': ['Monaco Grand Prix', 'Spanish Grand Prix']})
                 bundle = MockBundle()
 
-            # Add dummy status flags onto live structures to keep internal features clean
+            # Safeguards for columns required by feature engineering functions
             if 'status' not in bundle.results.columns:
                 bundle.results['status'] = 'Finished'
             if 'laps' not in bundle.results.columns:
                 bundle.results['laps'] = 60
+            if 'date' not in bundle.results.columns:
+                bundle.results['date'] = '2026-05-24'
 
             X, y = engineer_features(bundle.results)
             model = train_f1_model(X, y)
