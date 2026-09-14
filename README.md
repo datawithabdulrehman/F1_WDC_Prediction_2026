@@ -1,4 +1,4 @@
-# F1 2026 World Championship Prediction Model & Web App
+[# F1 2026 World Championship Prediction Model & Web App
 
 An end-to-end, open-source machine-learning project for estimating Formula 1 race finishing positions and converting those forecasts into Drivers' Championship win probabilities through Monte Carlo simulation.
 
@@ -451,6 +451,14 @@ The backend uses pagination with `limit=100`.
 The 2026 feature design is based on current FIA/F1 technical-regulation material. The repository should be periodically audited against the latest FIA-issued regulation documents because amendments can occur during a season.
 
 Key concepts represented include active aerodynamics, Overtake Mode, increased electrical contribution, removal of MGU-H, sustainable fuel, and the lighter/narrower chassis concept.
+
+## 🚀 Live Demo
+
+Try the deployed Streamlit dashboard here:
+
+👉 [**F1 2026 World Championship Prediction App**](https://f1wdcprediction2026-abxrehman.streamlit.app/)
+
+The live app provides race-finish predictions and Monte Carlo-based Drivers' Championship probabilities through an interactive Streamlit dashboard.
 
 ## 17. License
 
