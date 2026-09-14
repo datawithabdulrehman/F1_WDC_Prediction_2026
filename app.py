@@ -59,19 +59,18 @@ if run:
             try:
                 bundle = load_and_clean_data(season=int(season), use_api=True)
             except Exception:
-                # Custom fallback class object simulation mapping
+                # Fully resolved list parsing to avoid token syntax errors
                 class MockBundle:
                     def __init__(self):
-                        # Dictionary parsing structure separated to avoid any syntax tokenizer error
                         results_dict = {
-                            "season": [2026]*12,
+                            "season":,
                             "round":,
-                            "driver_id": ["antonelli","verstappen","norris","hamilton","leclerc","russell"]*2,
-                            "driver_name": ["Andrea Kimi Antonelli","Max Verstappen","Lando Norris","Lewis Hamilton","Charles Leclerc","George Russell"]*2,
-                            "constructor_id": ["mercedes","red_bull","mclaren","ferrari","ferrari","mercedes"]*2,
+                            "driver_id": ["antonelli","verstappen","norris","hamilton","leclerc","russell","antonelli","verstappen","norris","hamilton","leclerc","russell"],
+                            "driver_name": ["Andrea Kimi Antonelli","Max Verstappen","Lando Norris","Lewis Hamilton","Charles Leclerc","George Russell","Andrea Kimi Antonelli","Max Verstappen","Lando Norris","Lewis Hamilton","Charles Leclerc","George Russell"],
+                            "constructor_id": ["mercedes","red_bull","mclaren","ferrari","ferrari","mercedes","mercedes","red_bull","mclaren","ferrari","ferrari","mercedes"],
                             "grid":,
                             "position":,
-                            "points":,
+                            "points": [25.0, 18.0, 15.0, 12.0, 10.0, 8.0, 25.0, 18.0, 15.0, 12.0, 10.0, 8.0],
                             "status": ["Finished"]*12,
                             "laps": [60]*12,
                             "date": ["2026-05-24"]*12
@@ -88,7 +87,7 @@ if run:
 
                 bundle = MockBundle()
 
-            # Ensure all required status variables are available for engineering functions
+            # Ensure all required fallback variables are available for engineering functions
             if "status" not in bundle.results.columns:
                 bundle.results["status"] = "Finished"
             if "laps" not in bundle.results.columns:
